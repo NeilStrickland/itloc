@@ -34,7 +34,7 @@ instance : has_coe_to_fun (hom P Q) := {
  coe := λ f, f.val
 }
 
-@[extensionality]
+@[ext]
 lemma hom_ext (f g : hom P Q) : 
   (∀ (p : P), f p = g p) → f = g :=
 begin
@@ -83,7 +83,7 @@ def adjoint.iff {f : hom P Q} {g : hom Q P} (h : adjoint f g) :
     by { intros p q, unfold adjoint at h, exact h }
 
 def comp : (hom Q R) → (hom P Q) → (hom P R) := 
- λ g f, ⟨g.val ∘ f.val, monotone_comp f.property g.property⟩
+ λ g f, ⟨g.val ∘ f.val, monotone.comp g.property f.property ⟩
 
 lemma comp_val (g : hom Q R) (f : hom P Q) : 
  (comp g f).val = g.val ∘ f.val := rfl

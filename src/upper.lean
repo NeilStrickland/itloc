@@ -90,7 +90,7 @@ by { unfold els, apply_instance }
 instance : has_mem P (upper P) := ⟨λ p  U, p ∈ U.val⟩ 
 
 /-- Two upper sets are equal iff they have the same elements. -/
-@[extensionality] lemma ext (U₀ U₁ : upper P) : 
+@[ext] lemma ext (U₀ U₁ : upper P) : 
   (∀ (p : P), p ∈ U₀ ↔ p ∈ U₁) → U₀ = U₁ := 
 begin
   intro h, 

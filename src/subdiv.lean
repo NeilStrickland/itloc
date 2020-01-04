@@ -12,7 +12,7 @@ finite complexes based on finite posets, and the above map
 -/
 
 import data.list.sort
-import poset.basic order.sort_rank
+import basic sort_rank
 
 universes uP uQ uR uS
 

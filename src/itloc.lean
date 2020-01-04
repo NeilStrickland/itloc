@@ -16,9 +16,9 @@ import data.fintype
 import order.bounded_lattice
 import algebra.big_operators
 import fin_extra basic upper
-
 import tactic.squeeze
 
+#print notation
 open poset
 
 namespace itloc
@@ -322,35 +322,35 @@ end
 end ℙ 
 
 /-
- We define `ℚ n` to be the poset of upwards-closed subsets of 
+ We define `𝕂 n` to be the poset of upwards-closed subsets of 
  `ℙ n`, ordered by reverse inclusion.  
 
  LaTeX: defn-Q
 -/
 
 variable (n)
-def ℚ := poset.upper (ℙ n)
+def 𝕂 := poset.upper (ℙ n)
 
-namespace ℚ 
+namespace 𝕂 
 
-instance : lattice.bounded_distrib_lattice (ℚ n) := 
+instance : lattice.bounded_distrib_lattice (𝕂 n) := 
 @upper.bdl (ℙ n) _ _ _ _
 
-instance : partial_order (ℚ n) := by apply_instance 
+instance : partial_order (𝕂 n) := by apply_instance 
 
-instance : fintype  (ℚ n) := upper.fintype (ℙ n)
-instance : has_repr (ℚ n) := upper.has_repr (ℙ n)
+instance : fintype  (𝕂 n) := upper.fintype (ℙ n)
+instance : has_repr (𝕂 n) := upper.has_repr (ℙ n)
 
-instance ℙ_mem_ℚ : has_mem (ℙ n) (ℚ n) := 
-by { unfold ℚ, apply_instance }
+instance ℙ_mem_𝕂 : has_mem (ℙ n) (𝕂 n) := 
+by { unfold 𝕂, apply_instance }
 
-instance decidable_mem (A : ℙ n) (U : ℚ n) : decidable (A ∈ U) := 
+instance decidable_mem (A : ℙ n) (U : 𝕂 n) : decidable (A ∈ U) := 
 by { change decidable (A ∈ U.val), apply_instance }
 
 variable {n}
 
 /-- LaTeX: defn-Q -/
-def u : poset.hom (ℙ n) (ℚ n) := upper.u
+def u : poset.hom (ℙ n) (𝕂 n) := upper.u
 
 lemma mem_u {T : ℙ n} {A : ℙ n} : A ∈ @u n T ↔ T ≤ A := 
 begin
@@ -359,7 +359,7 @@ begin
 end
 
 /-- LaTeX: defn-Q -/
-def v (T : ℙ n) : (ℚ n) := 
+def v (T : ℙ n) : (𝕂 n) := 
 ⟨ finset.univ.filter (λ A, ∃ i, i ∈ A ∧ i ∈ T), 
   begin 
     rintro A B A_le_B h,
@@ -383,10 +383,10 @@ begin
 end
 
 /-
- We make `ℚ n` into a monoid as follows: `U * V` is the set of all
+ We make `𝕂 n` into a monoid as follows: `U * V` is the set of all
  sets of the form `A ∪ B`, where `A ∈ U` and `B ∈ V` and `A ∟ B`.
  The monoid structure is compatible with the partial order, and this
- allows us to regard `ℚ n` as a monoidal category (in which all
+ allows us to regard `𝕂 n` as a monoidal category (in which all
  hom sets have size at most one).  
 
  LaTeX: lem-mu
@@ -442,7 +442,7 @@ begin
   exact hU A C A_le_C hA,
  },{
   intro C_in_U,
-  have B_in_V : (⊥ : ℙ n) ∈ (⊥ : ℚ n) := @finset.mem_univ (ℙ n) _ ⊥,
+  have B_in_V : (⊥ : ℙ n) ∈ (⊥ : 𝕂 n) := @finset.mem_univ (ℙ n) _ ⊥,
   use C,use ⊥,
   exact ⟨C_in_U,B_in_V,C.angle_bot,lattice.sup_bot_eq⟩, 
  } 
@@ -490,7 +490,7 @@ end
 
 variable (n) 
 
-instance : monoid (ℚ n) := {
+instance : monoid (𝕂 n) := {
   one := ⊥, 
   mul := λ U V, ⟨mul0 U.val V.val,is_upper_mul0 U.val V.val U.property V.property⟩,
   one_mul := λ V, subtype.eq (bot_mul0 V.val V.property),
@@ -562,11 +562,11 @@ instance : monoid (ℚ n) := {
 variable {n} 
 
 /-- Membership rule for `U * V` -/
-lemma mem_mul (U V : ℚ n) (C : ℙ n) : C ∈ U * V ↔  
+lemma mem_mul (U V : 𝕂 n) (C : ℙ n) : C ∈ U * V ↔  
   ∃ A B, A ∈ U ∧ B ∈ V ∧ (A ∟ B) ∧ (A ⊔ B = C) := mem_mul0 U.val V.val C 
 
 /-- Multiplication is monotone in both variables. -/
-lemma mul_le_mul (U₀ V₀ U₁ V₁ : ℚ n) (hU : U₀ ≤ U₁ ) (hV : V₀ ≤ V₁) : 
+lemma mul_le_mul (U₀ V₀ U₁ V₁ : 𝕂 n) (hU : U₀ ≤ U₁ ) (hV : V₀ ≤ V₁) : 
  U₀ * V₀ ≤ U₁ * V₁ := 
 begin
  change (mul0 U₁.val V₁.val) ⊆ (mul0 U₀.val V₀.val),
@@ -576,13 +576,13 @@ begin
 end
 
 /-- Multiplication distributes over union (on both sides).
-  Recall that we order ℚ n by reverse inclusion, so the union
+  Recall that we order 𝕂 n by reverse inclusion, so the union
   is the lattice inf operation, and is written as U ⊓ V.
 
   LaTeX: lem-mu
 -/
 
-lemma mul_inf (U V W : ℚ n) : U * (V ⊓ W) = (U * V) ⊓ (U * W) := 
+lemma mul_inf (U V W : 𝕂 n) : U * (V ⊓ W) = (U * V) ⊓ (U * W) := 
 begin
   ext C,
   rw [upper.mem_inf, mem_mul U (V ⊓ W)],
@@ -601,7 +601,7 @@ begin
       exact ⟨A,B,hAU,hBVW,h_angle,h_ABC⟩ } }
 end
 
-lemma inf_mul (U V W : ℚ n) : (U ⊓ V) * W = (U * W) ⊓ (V * W) := 
+lemma inf_mul (U V W : 𝕂 n) : (U ⊓ V) * W = (U * W) ⊓ (V * W) := 
 begin
   ext C,
   rw [upper.mem_inf, mem_mul (U ⊓ V) W],
@@ -622,10 +622,10 @@ end
 
 /-- LaTeX: rem-kp -/
 
-def κ (U : ℚ n) : ℙ n := 
+def κ (U : 𝕂 n) : ℙ n := 
   finset.univ.filter (λ i, finset.singleton i ∈ U)
 
-lemma κ_mul (U V : ℚ n) : κ (U * V) = (κ U) ⊓ (κ V) := 
+lemma κ_mul (U V : 𝕂 n) : κ (U * V) = (κ U) ⊓ (κ V) := 
 begin
   ext i,
   let ii := finset.singleton i,
@@ -634,7 +634,7 @@ begin
   have ii_union : ii ∪ ii = ii := lattice.sup_idem,
   have : ii ∈ U * V ↔ ii ∈ U ∧ ii ∈ V := 
   begin
-    rw[ℚ.mem_mul],
+    rw[𝕂.mem_mul],
     split,
     { rintro ⟨A,B,A_in_U,B_in_V,h_angle,h_union⟩,
       have hA : A ≤ ii := by { rw[← h_union], exact lattice.le_sup_left },
@@ -657,7 +657,7 @@ def threads : list (ℙ n) → finset (list (𝕀 n))
 | (list.cons A AA) := 
     A.bind (λ a, ((threads AA).filter (λ B, ∀ b ∈ B, a ≤ b)).image (list.cons a))
 
-def thread_sets (AA : list (ℙ n)) : ℚ n := 
+def thread_sets (AA : list (ℙ n)) : 𝕂 n := 
 ⟨ finset.univ.filter (λ T, ∃ u ∈ threads AA, (∀ a ∈ u, a ∈ T)),
   begin
     intros T₀ T₁ h_le h_mem,
@@ -680,7 +680,7 @@ begin
   induction AA with A AA ih,
   { change ⊥ = _,
     ext A,
-    have : A ∈ (⊥ : ℚ n) := upper.mem_bot A, simp[this],
+    have : A ∈ (⊥ : 𝕂 n) := upper.mem_bot A, simp[this],
     apply finset.mem_filter.mpr ⟨finset.mem_univ A,_⟩,
     use list.nil,
     use finset.mem_singleton_self list.nil,
@@ -688,7 +688,7 @@ begin
     exact false.elim (list.not_mem_nil a a_in_nil) },
   { rw [list.map_cons, list.prod_cons],
     ext T,
-    rw [ih, ℚ.mem_mul (v A) _],
+    rw [ih, 𝕂.mem_mul (v A) _],
     split; intro h,
     { rcases h with ⟨R,S,hR,hS,h_angle,h_union⟩, 
       rcases mem_thread_sets.mp hS with ⟨u,u_in_threads,u_in_S⟩,
@@ -743,7 +743,7 @@ begin
       { exact ℙ.filter_sup (le_of_lt a.val.lt_succ_self) T } } }
 end
 
-end ℚ 
+end 𝕂 
 
 def is_universal {α : Type*} [fintype α] [decidable_eq α] (l : list α) := 
   l.nodup ∧ l.to_finset = finset.univ
@@ -767,14 +767,14 @@ def p₀₁ : ℙ 2 := ⊤
 
 lemma ℙ_univ : is_universal [p, p₀, p₁, p₀₁] := dec_trivial
 
-def u := @ℚ.u 2
+def u := @𝕂.u 2
 
-def L : list (ℚ 2) := [u p, u p₀, u p₁, u p₀₁, u p₀ ⊓ u p₁, ⊤]
+def L : list (𝕂 2) := [u p, u p₀, u p₁, u p₀₁, u p₀ ⊓ u p₁, ⊤]
 
 #eval (L.nodup : bool)
 #eval (is_universal L : bool)
 
-lemma ℚ_univ : is_universal L := dec_trivial
+lemma 𝕂_univ : is_universal L := dec_trivial
 
 end example_two 
 
@@ -799,34 +799,34 @@ def p₀₁₂ : ℙ 3 := ⊤
 lemma ℙ_univ :
  is_universal [p, p₀, p₁, p₂, p₀₁, p₀₂, p₁₂, p₀₁₂] := dec_trivial
 
-def u := @ℚ.u 3
-def v := @ℚ.v 3
+def u := @𝕂.u 3
+def v := @𝕂.v 3
 
-def u₀ : ℚ 3 := u p₀ 
-def u₁ : ℚ 3 := u p₁ 
-def u₂ : ℚ 3 := u p₂ 
+def u₀ : 𝕂 3 := u p₀ 
+def u₁ : 𝕂 3 := u p₁ 
+def u₂ : 𝕂 3 := u p₂ 
 
-def u₀₁ : ℚ 3 := u p₀₁  
-def u₀₂ : ℚ 3 := u p₀₂ 
-def u₁₂ : ℚ 3 := u p₁₂ 
+def u₀₁ : 𝕂 3 := u p₀₁  
+def u₀₂ : 𝕂 3 := u p₀₂ 
+def u₁₂ : 𝕂 3 := u p₁₂ 
 
-def u₀₁₂ : ℚ 3 := u p₀₁₂ 
+def u₀₁₂ : 𝕂 3 := u p₀₁₂ 
 
-def v₀₁ : ℚ 3 := u p₀ ⊓ u p₁ 
-def v₀₂ : ℚ 3 := u p₀ ⊓ u p₂ 
-def v₁₂ : ℚ 3 := u p₁ ⊓ u p₂ 
+def v₀₁ : 𝕂 3 := u p₀ ⊓ u p₁ 
+def v₀₂ : 𝕂 3 := u p₀ ⊓ u p₂ 
+def v₁₂ : 𝕂 3 := u p₁ ⊓ u p₂ 
 
-def x₀ : ℚ 3 := u p₀ ⊓ u p₁₂ 
-def x₁ : ℚ 3 := u p₁ ⊓ u p₀₂ 
-def x₂ : ℚ 3 := u p₂ ⊓ u p₀₁ 
+def x₀ : 𝕂 3 := u p₀ ⊓ u p₁₂ 
+def x₁ : 𝕂 3 := u p₁ ⊓ u p₀₂ 
+def x₂ : 𝕂 3 := u p₂ ⊓ u p₀₁ 
 
-def w₀ : ℚ 3 := u₀₁ ⊓ u₀₂ 
-def w₁ : ℚ 3 := u₀₁ ⊓ u₁₂ 
-def w₂ : ℚ 3 := u₀₂ ⊓ u₁₂ 
+def w₀ : 𝕂 3 := u₀₁ ⊓ u₀₂ 
+def w₁ : 𝕂 3 := u₀₁ ⊓ u₁₂ 
+def w₂ : 𝕂 3 := u₀₂ ⊓ u₁₂ 
 
 def y := u₀₁ ⊓ u₀₂ ⊓ u₁₂ 
 
-def L : list (ℚ 3) := [
+def L : list (𝕂 3) := [
  ⊥, v p₀₁₂, v₀₁, v₀₂, v₁₂, x₀, x₁, x₂, 
  u₀, u₁, u₂, w₀, w₁, w₂, u₀₁, u₀₂, u₁₂, 
  u₀₁₂, y, ⊤ ]
@@ -834,7 +834,7 @@ def L : list (ℚ 3) := [
 #eval (L.nodup : bool)
 #eval (is_universal L : bool)
 
--- lemma ℚ_univ : is_universal L := dec_trivial
+-- lemma 𝕂_univ : is_universal L := dec_trivial
 
 lemma eqs : 
  x₀ = v₀₁ * v₀₂ ∧ x₁ = v₀₁ * v₁₂ ∧ x₂ = v₀₂ * v₁₂ ∧ 
@@ -1227,15 +1227,15 @@ begin
  exact ⟨hU A₀ A₁ h_le_A A₀_in_U,hV B₀ B₁ h_le_B B₀_in_V⟩,
 end
 
-def omul : (ℚ n) → (ℚ n) → (𝕃 n) := 
+def omul : (𝕂 n) → (𝕂 n) → (𝕃 n) := 
  λ U V, ⟨omul0 U.val V.val, is_upper_omul0 U.property V.property⟩ 
 
-lemma mem_omul (U V : (ℚ n)) (AB : 𝕄 n) : 
+lemma mem_omul (U V : (𝕂 n)) (AB : 𝕄 n) : 
  AB ∈ omul U V ↔ AB.val.1 ∈ U ∧ AB.val.2 ∈ V := 
 mem_omul0 U.val V.val AB  
 
 lemma omul_mono₂ : 
- ∀ {U₀ U₁ V₀ V₁ : ℚ n} (hU : U₀ ≤ U₁) (hV : V₀ ≤ V₁), 
+ ∀ {U₀ U₁ V₀ V₁ : 𝕂 n} (hU : U₀ ≤ U₁) (hV : V₀ ≤ V₁), 
   omul U₀ V₀ ≤ omul U₁ V₁
 | ⟨U₀,hU₀⟩ ⟨U₁,hU₁⟩ ⟨V₀,hV₀⟩ ⟨V₁,hV₁⟩ hU hV ⟨A,B⟩ h := 
 begin
@@ -1244,7 +1244,7 @@ begin
  exact ⟨hU hAU,hV hBV⟩,
 end
 
-def σ0 (W : 𝕃 n) : ℚ n := 
+def σ0 (W : 𝕃 n) : 𝕂 n := 
  ⟨W.val.image (@σ n),
   begin
    intros C C' h_le C_in_sg_W,
@@ -1283,7 +1283,7 @@ def σ0 (W : 𝕃 n) : ℚ n :=
    }
   end⟩
 
-def σ' : poset.hom (𝕃 n) (ℚ n) := ⟨@σ0 n,
+def σ' : poset.hom (𝕃 n) (𝕂 n) := ⟨@σ0 n,
 begin
   rintro W₀ W₁ h_le C C_in_sg_W,
   rcases finset.mem_image.mp C_in_sg_W with ⟨AB,h_mem,h_eq⟩,
@@ -1299,10 +1299,10 @@ begin
   intro AB, simp, refl,
 end
 
-lemma factor_σ (U V : ℚ n) : U * V = @σ' n (omul U V) := 
+lemma factor_σ (U V : 𝕂 n) : U * V = @σ' n (omul U V) := 
 begin
   ext C,
-  rw [ℚ.mem_mul U V C, mem_σ' (omul U V)],
+  rw [𝕂.mem_mul U V C, mem_σ' (omul U V)],
   split; intro h,
   { rcases h with ⟨A,B,A_in_U,B_in_V,h_angle,h_eq⟩, 
     use ⟨⟨A,B⟩,h_angle⟩,
@@ -1315,26 +1315,26 @@ begin
 end
 
 /-- LaTeX: lem-mu-u -/
-lemma mul_u (A B : ℙ n) : (@ℚ.u n A) * (@ℚ.u n B) =
-  ite (A ∟ B) (@ℚ.u n (A ⊔ B)) ⊤ := 
+lemma mul_u (A B : ℙ n) : (@𝕂.u n A) * (@𝕂.u n B) =
+  ite (A ∟ B) (@𝕂.u n (A ⊔ B)) ⊤ := 
 begin
   ext C, 
-  rw [ℚ.mem_mul (@ℚ.u n A) (@ℚ.u n B) C],  
+  rw [𝕂.mem_mul (@𝕂.u n A) (@𝕂.u n B) C],  
   split; intro h,
   { rcases h with ⟨A',B',hA,hB,h_angle,h_union⟩, 
-    rw [ℚ.mem_u] at hA hB,
+    rw [𝕂.mem_u] at hA hB,
     have : A ∟ B := λ a b ha hb, h_angle (hA ha) (hB hb),
-    rw [if_pos this, @ℚ.mem_u n (A ⊔ B) C, ← h_union],
+    rw [if_pos this, @𝕂.mem_u n (A ⊔ B) C, ← h_union],
     exact lattice.sup_le_sup hA hB },
   { by_cases h_angle : A ∟ B, 
-    { rw [if_pos h_angle, @ℚ.mem_u n] at h, 
+    { rw [if_pos h_angle, @𝕂.mem_u n] at h, 
       rcases (ℙ.angle_iff.mp h_angle) with ⟨⟨⟩⟩ | ⟨k,⟨hA,hB⟩⟩,
       { use ⊥, use ⊥, 
-        rw[ℙ.mem_zero A, ℙ.mem_zero B, ℙ.mem_zero C, ℚ.mem_u],
+        rw[ℙ.mem_zero A, ℙ.mem_zero B, ℙ.mem_zero C, 𝕂.mem_u],
         simp only [ℙ.bot_angle, le_refl, lattice.sup_bot_eq, true_and] },
       { use C.filter_lt k.val.succ, 
         use C.filter_ge k.val,
-        rw [ℚ.mem_u, ℚ.mem_u],
+        rw [𝕂.mem_u, 𝕂.mem_u],
         have hA' : A ≤ C.filter_lt k.val.succ := λ a ha, 
          ℙ.mem_filter_lt.mpr
            ⟨h (finset.mem_union_left B ha),nat.lt_succ_iff.mpr (hA ha)⟩,
@@ -1351,7 +1351,7 @@ end
 /-- `σ_slice U V` is the map from `U # V` to `U * V` whose
   (co)finality is proved in prop-sg-final and prop-sg-cofinal.
 -/
-def σ_slice (U V : ℚ n) : hom (omul U V).els (U * V).els := 
+def σ_slice (U V : 𝕂 n) : hom (omul U V).els (U * V).els := 
 ⟨ λ ABh, ⟨@σ n ABh.val, 
  begin 
   rw [factor_σ U V],
@@ -1361,7 +1361,7 @@ def σ_slice (U V : ℚ n) : hom (omul U V).els (U * V).els :=
 
 namespace σ_slice
 
-variables (U V : ℚ n) (C : (U * V).els)
+variables (U V : 𝕂 n) (C : (U * V).els)
 
 /-- This is the map sending `A` to `C_{≤ max A}`, which is 
   used (but not named) in prop-sg-cofinal. -/
@@ -1477,7 +1477,7 @@ lemma ij_exists  :
  ∃ i j : ℕ, ij_spec U V C i j := 
 begin 
   rcases C with ⟨C,hC⟩,
-  rcases (ℚ.mem_mul U V C).mp hC with ⟨A₀,B₀,hA₀,hB₀,h_angle₀,h_eq₀⟩,
+  rcases (𝕂.mem_mul U V C).mp hC with ⟨A₀,B₀,hA₀,hB₀,h_angle₀,h_eq₀⟩,
   have hAC₀ : A₀ ≤ C := by { rw[← h_eq₀], exact lattice.le_sup_left },
   have hBC₀ : B₀ ≤ C := by { rw[← h_eq₀], exact lattice.le_sup_right },
   let i_prop : fin n.succ → Prop := λ i, C.filter_lt i.val ∈ U,
@@ -1669,7 +1669,7 @@ def k_spec (k : ℕ) : Prop :=
 lemma k_exists : ∃ (k : ℕ), k_spec U V C k := 
 begin
   rcases C with ⟨C,hC⟩,
-  rcases (ℚ.mem_mul U V C).mp hC with ⟨A,B,hAU,hBV,h_angle,hABC⟩,
+  rcases (𝕂.mem_mul U V C).mp hC with ⟨A,B,hAU,hBV,h_angle,hABC⟩,
   rcases ℙ.angle_iff.mp h_angle with ⟨⟨⟩⟩ | ⟨k,hkA,hkB⟩,
   { use 0, 
     dsimp [k_spec],
